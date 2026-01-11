@@ -115,8 +115,8 @@
 	// Get file type icon color
 	function getTypeColor(type: string): string {
 		switch (type) {
-			case 'pdf': return 'text-red-500';
-			case 'docx': return 'text-blue-500';
+			case 'pdf': return 'text-blue-500';
+			case 'docx': return 'text-blue-600';
 			case 'xlsx': case 'csv': return 'text-green-500';
 			case 'png': case 'jpg': case 'gif': return 'text-purple-500';
 			case 'mp3': case 'mp4': return 'text-orange-500';
@@ -184,7 +184,7 @@
 				<!-- Quick guide -->
 				<div class="text-sm text-gray-500 dark:text-gray-400 space-y-1 mb-6">
 					<p><strong class="text-gray-700 dark:text-gray-300">Navigate:</strong> Click folders to expand/collapse. Click files to view.</p>
-					<p><strong class="text-gray-700 dark:text-gray-300">Search:</strong> Use the search box above or <kbd class="px-1.5 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 rounded">Cmd/Ctrl+F</kbd> to find documents.</p>
+					<p><strong class="text-gray-700 dark:text-gray-300">Search:</strong> Use the search box above to find documents.</p>
 					<p><strong class="text-gray-700 dark:text-gray-300">Share:</strong> URLs update as you navigate - copy to share direct links.</p>
 				</div>
 
