@@ -19,7 +19,7 @@ A public archive of regulatory documents for drug trials (ALLN-177/Reloxaliase, 
   ├── documents/        # .gitignored - data lives here
   └── README.md
   ```
-- [ ] Add README with setup instructions
+- [x] Add README with setup instructions
 - [x] Define metadata format (data contract for all phases): see [METADATA.md](METADATA.md)
   - One `metadata.json` per directory
   - `_folder` key for folder-level metadata (title, summary, drug)
