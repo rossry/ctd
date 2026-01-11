@@ -18,6 +18,7 @@ BASE_URL = "https://archive.icosian.net"
 TOP_LEVEL_ORDER = {
     "ALLN-346": 1,
     "ALLN-177-Reloxaliase": 2,
+    "Divalent-siRNA": 3,
     "Supporting": 99,
 }
 
@@ -280,7 +281,20 @@ def main():
     md_lines = [
         "# CTD Document Archive",
         "",
-        "This archive contains regulatory documents for ALLN-177 (Reloxaliase) and ALLN-346 drug trials.",
+        "This archive contains regulatory documents for drug trials.",
+        "",
+        "## Data Sources",
+        "",
+        "| Drug | Indication | Source | License |",
+        "|------|------------|--------|---------|",
+        "| ALLN-177 (Reloxaliase) | Enteric hyperoxaluria | Allena Pharmaceuticals | Public (FDA) |",
+        "| ALLN-346 | Hyperuricemia/gout in CKD | Allena Pharmaceuticals | Public (FDA) |",
+        "| Divalent siRNA | Prion disease | Eric Minikel et al. | CC-BY-4.0 |",
+        "",
+        "### Divalent siRNA Attribution",
+        "",
+        "> Gentile JE, Corridon TL, Serack FE, et al. **Divalent siRNA for prion disease.**",
+        "> bioRxiv. 2024 Dec 5;2024.12.05.627039. https://doi.org/10.1101/2024.12.05.627039",
         "",
         "## Documents",
         ""

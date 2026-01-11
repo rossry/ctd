@@ -166,17 +166,23 @@
 				</p>
 
 				<!-- Drug cards -->
-				<div class="grid sm:grid-cols-2 gap-4 mb-6">
-					<div class="p-4 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950">
-						<h3 class="font-semibold text-blue-900 dark:text-blue-100">ALLN-346</h3>
-						<p class="text-sm text-blue-700 dark:text-blue-300 mt-1">
+				<div class="grid sm:grid-cols-3 gap-4 mb-6">
+					<div class="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+						<h3 class="font-semibold text-gray-900 dark:text-gray-100">ALLN-346</h3>
+						<p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
 							Engineered uricase for hyperuricemia and gout in CKD patients. FDA Fast Track designation.
 						</p>
 					</div>
-					<div class="p-4 rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950">
-						<h3 class="font-semibold text-green-900 dark:text-green-100">ALLN-177 (Reloxaliase)</h3>
-						<p class="text-sm text-green-700 dark:text-green-300 mt-1">
+					<div class="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+						<h3 class="font-semibold text-gray-900 dark:text-gray-100">ALLN-177 (Reloxaliase)</h3>
+						<p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
 							Oral enzyme therapy for enteric hyperoxaluria. Degrades dietary oxalate to prevent kidney stones.
+						</p>
+					</div>
+					<div class="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+						<h3 class="font-semibold text-gray-900 dark:text-gray-100">Divalent siRNA</h3>
+						<p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+							siRNA therapeutic for prion disease. IND cleared March 2025. <a href="https://doi.org/10.1101/2024.12.05.627039" class="text-blue-500 hover:underline">CC-BY-4.0</a>
 						</p>
 					</div>
 				</div>

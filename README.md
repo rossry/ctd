@@ -1,6 +1,21 @@
 # CTD Document Archive
 
-A public archive of regulatory documents for drug trials (ALLN-177/Reloxaliase, ALLN-346). Makes clinical trial data navigable and understandable for researchers, patients, and AI agents.
+A public archive of regulatory documents for drug trials. Makes clinical trial data navigable and understandable for researchers, patients, and AI agents.
+
+## Data Sources
+
+| Drug | Indication | Source | License |
+|------|------------|--------|---------|
+| ALLN-177 (Reloxaliase) | Enteric hyperoxaluria | Allena Pharmaceuticals | Public (FDA) |
+| ALLN-346 | Hyperuricemia/gout in CKD | Allena Pharmaceuticals | Public (FDA) |
+| Divalent siRNA | Prion disease | [Eric Minikel et al.](https://github.com/ericminikel/divalent) | CC-BY-4.0 |
+
+### Divalent siRNA Attribution
+
+The Divalent siRNA IND application and research data are provided under CC-BY-4.0 license:
+
+> Gentile JE, Corridon TL, Serack FE, et al. **Divalent siRNA for prion disease.** bioRxiv. 2024 Dec 5;2024.12.05.627039.
+> https://doi.org/10.1101/2024.12.05.627039
 
 ## Quick Start
 
@@ -24,7 +39,9 @@ python -m http.server 8000
 ```
 /
 ├── documents/          # Document files (not in git)
+│   ├── ALLN-177-Reloxaliase/
 │   ├── ALLN-346/
+│   ├── Divalent-siRNA/
 │   └── Supporting/
 ├── generate_toc.py     # Generates toc.json from documents/
 ├── index.html          # Current viewer (being replaced with Svelte)
