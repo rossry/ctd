@@ -98,15 +98,15 @@ A public archive of regulatory documents for drug trials (ALLN-177/Reloxaliase, 
 
 *Uses metadata format defined in Phase 1*
 
-- [ ] Per-file context displayed in two places:
+- [x] Per-file context displayed in two places:
   - **Sidebar**: One-sentence summary beneath each file name
-  - **Viewer header**: Paragraph of context at top of viewer (fades/collapses on scroll)
-- [ ] Landing view (when no file selected):
+  - **Viewer header**: Breadcrumb, title, summary, drug badge, and file type
+- [x] Landing view (when no file selected):
   - What is this archive?
   - What drugs are included?
   - How to navigate
-  - How to contribute data
-- [ ] Glossary of terms (CSR, TLF, ADaM, SDTM, etc.) - inline tooltips or expandable
+  - Quick start guide
+- [x] Glossary of terms (CSR, TLF, ADaM, SDTM, etc.) - expandable section with definitions
 
 ---
 

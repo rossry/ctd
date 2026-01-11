@@ -144,14 +144,44 @@
 </script>
 
 {#if entry && fileUrl()}
+	{@const pathParts = entry.path.split('/').slice(1, -1)}
 	<div class="h-full flex flex-col">
 		<!-- Header with context -->
-		{#if entry.summary}
-			<div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-				<h2 class="font-medium text-lg">{entry.title || entry.name}</h2>
-				<p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{entry.summary}</p>
+		<div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 shrink-0">
+			<!-- Breadcrumb -->
+			{#if pathParts.length > 0}
+				<div class="text-xs text-gray-500 dark:text-gray-400 mb-1 flex items-center gap-1 flex-wrap">
+					{#each pathParts as part, i}
+						<span>{part}</span>
+						{#if i < pathParts.length - 1}
+							<span class="text-gray-300 dark:text-gray-600">/</span>
+						{/if}
+					{/each}
+				</div>
+			{/if}
+
+			<!-- Title and metadata -->
+			<div class="flex items-start justify-between gap-4">
+				<div class="min-w-0">
+					<h2 class="font-medium text-lg text-gray-900 dark:text-gray-100 break-words">
+						{entry.title || entry.name}
+					</h2>
+					{#if entry.summary}
+						<p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{entry.summary}</p>
+					{/if}
+				</div>
+				<div class="flex items-center gap-2 shrink-0">
+					{#if entry.drug}
+						<span class="px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 rounded">
+							{entry.drug}
+						</span>
+					{/if}
+					<span class="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 rounded uppercase">
+						{entry.type}
+					</span>
+				</div>
 			</div>
-		{/if}
+		</div>
 
 		<!-- Viewer area -->
 		<div class="flex-1 overflow-hidden relative">

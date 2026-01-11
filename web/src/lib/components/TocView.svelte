@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { ChevronRight, Search, Folder, FileText, X } from 'lucide-svelte';
+	import Glossary from './Glossary.svelte';
 	import type { TocEntry } from '$lib/types';
 
 	interface Props {
@@ -155,17 +156,46 @@
 	<!-- TOC content -->
 	<div class="flex-1 overflow-auto p-4">
 		<div class="max-w-4xl mx-auto">
-			<!-- Header -->
-			<h1 class="text-2xl font-bold mb-2 text-gray-900 dark:text-gray-100">
-				{toc.title ?? toc.name}
-			</h1>
-			{#if toc.summary}
-				<p class="text-gray-600 dark:text-gray-400 mb-6">{toc.summary}</p>
-			{:else}
-				<p class="text-gray-600 dark:text-gray-400 mb-6">
-					Regulatory documents for ALLN-177 (Reloxaliase) and ALLN-346 drug trials.
+			<!-- Welcome section -->
+			<div class="mb-8">
+				<h1 class="text-2xl font-bold mb-3 text-gray-900 dark:text-gray-100">
+					CTD Document Archive
+				</h1>
+				<p class="text-gray-600 dark:text-gray-400 mb-4">
+					A public archive of regulatory documents from clinical drug trials, made accessible for researchers, patients, healthcare professionals, and AI agents.
 				</p>
-			{/if}
+
+				<!-- Drug cards -->
+				<div class="grid sm:grid-cols-2 gap-4 mb-6">
+					<div class="p-4 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950">
+						<h3 class="font-semibold text-blue-900 dark:text-blue-100">ALLN-346</h3>
+						<p class="text-sm text-blue-700 dark:text-blue-300 mt-1">
+							Engineered uricase for hyperuricemia and gout in CKD patients. FDA Fast Track designation.
+						</p>
+					</div>
+					<div class="p-4 rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950">
+						<h3 class="font-semibold text-green-900 dark:text-green-100">ALLN-177 (Reloxaliase)</h3>
+						<p class="text-sm text-green-700 dark:text-green-300 mt-1">
+							Oral enzyme therapy for enteric hyperoxaluria. Degrades dietary oxalate to prevent kidney stones.
+						</p>
+					</div>
+				</div>
+
+				<!-- Quick guide -->
+				<div class="text-sm text-gray-500 dark:text-gray-400 space-y-1 mb-6">
+					<p><strong class="text-gray-700 dark:text-gray-300">Navigate:</strong> Click folders to expand/collapse. Click files to view.</p>
+					<p><strong class="text-gray-700 dark:text-gray-300">Search:</strong> Use the search box above or <kbd class="px-1.5 py-0.5 text-xs bg-gray-100 dark:bg-gray-700 rounded">Cmd/Ctrl+F</kbd> to find documents.</p>
+					<p><strong class="text-gray-700 dark:text-gray-300">Share:</strong> URLs update as you navigate - copy to share direct links.</p>
+				</div>
+
+				<!-- Glossary -->
+				<Glossary />
+			</div>
+
+			<!-- Section header -->
+			<h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3 pb-2 border-b border-gray-200 dark:border-gray-700">
+				Documents
+			</h2>
 
 			<!-- Tree -->
 			{#if toc.children}
