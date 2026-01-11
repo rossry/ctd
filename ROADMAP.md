@@ -31,11 +31,11 @@ A public archive of regulatory documents for drug trials (ALLN-177/Reloxaliase, 
 ## Phase 2: HTTPS & Production Setup
 **Goal: Secure site with Let's Encrypt**
 
-- [ ] Set up Nginx as reverse proxy
-- [ ] Install certbot
-- [ ] Configure SSL certificate for domain
-- [ ] Auto-renewal cron job
-- [ ] Redirect HTTP → HTTPS
+- [x] Set up Nginx as reverse proxy
+- [x] Install certbot
+- [x] Configure SSL certificate for domain
+- [x] Auto-renewal cron job (certbot sets this up automatically)
+- [x] Redirect HTTP → HTTPS
 
 ---
 
