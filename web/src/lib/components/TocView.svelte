@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { ChevronRight, Search, Folder, FileText, X } from 'lucide-svelte';
 	import type { TocEntry } from '$lib/types';
 
@@ -12,13 +13,15 @@
 	let expandedPaths: Set<string> = $state(new Set());
 	let searchQuery = $state('');
 	let matchingPaths: Set<string> = $state(new Set());
+	let initialized = false;
 
-	// Initialize with first 3 levels expanded
-	$effect(() => {
-		if (toc) {
+	// Initialize with first 3 levels expanded (only once)
+	onMount(() => {
+		if (toc && !initialized) {
 			const initial = new Set<string>();
 			collectPathsToDepth(toc, 0, 3, initial);
 			expandedPaths = initial;
+			initialized = true;
 		}
 	});
 
@@ -45,8 +48,8 @@
 		return expandedPaths.has(path);
 	}
 
-	// Search functionality
-	$effect(() => {
+	// Search functionality - run on input, not as reactive effect
+	function handleSearch() {
 		if (searchQuery.trim()) {
 			const query = searchQuery.toLowerCase();
 			const matches = new Set<string>();
@@ -62,7 +65,7 @@
 		} else {
 			matchingPaths = new Set();
 		}
-	});
+	}
 
 	function findMatches(
 		node: TocEntry,
@@ -93,6 +96,7 @@
 
 	function clearSearch() {
 		searchQuery = '';
+		matchingPaths = new Set();
 	}
 
 	function isMatch(path: string): boolean {
@@ -128,6 +132,7 @@
 			<input
 				type="text"
 				bind:value={searchQuery}
+				oninput={handleSearch}
 				placeholder="Search documents..."
 				class="w-full pl-10 pr-10 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 			/>
