@@ -21,6 +21,9 @@ web/.svelte-kit/
 .DS_Store
 Thumbs.db
 
+# Claude Code
+.claude/
+
 # Generated (can be regenerated from documents/)
 /toc.json
 __pycache__/
