@@ -1,5 +1,6 @@
 # Document data (large files, not for git)
-/documents/
+/documents/*
+!/documents/.gitignore
 
 # Data files
 *.sas7bdat
@@ -23,3 +24,6 @@ Thumbs.db
 # Generated (can be regenerated from documents/)
 toc.json
 __pycache__/
+
+# Web app document symlinks
+web/static/documents/
