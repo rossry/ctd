@@ -22,8 +22,6 @@ web/.svelte-kit/
 Thumbs.db
 
 # Generated (can be regenerated from documents/)
-toc.json
+/toc.json
 __pycache__/
 
-# Web app document symlinks
-web/static/documents/

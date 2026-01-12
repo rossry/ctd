@@ -290,7 +290,7 @@ def create_accession_metadata():
             "path": DOCS_DIR / "RDCP-26-0001",
             "metadata": {
                 "accession": "RDCP-26-0001",
-                "title": "ALLN-177 (Reloxaliase) Clinical Development Package",
+                "title": "RDCP-26-0001 - ALLN-177 Reloxaliase",
                 "drug": "ALLN-177",
                 "drugName": "Reloxaliase",
                 "description": "Oral enzyme therapeutic for enteric hyperoxaluria. Reloxaliase is a recombinant oxalate decarboxylase enzyme designed to degrade dietary oxalate in the gastrointestinal tract.",
@@ -309,9 +309,9 @@ def create_accession_metadata():
             "path": DOCS_DIR / "RDCP-26-0002",
             "metadata": {
                 "accession": "RDCP-26-0002",
-                "title": "ALLN-346 Clinical Development Package",
+                "title": "RDCP-26-0002 - ALLN-346 Urate Oxidase",
                 "drug": "ALLN-346",
-                "drugName": "Engineered Uricase",
+                "drugName": "Urate Oxidase",
                 "description": "Engineered uricase enzyme for treatment of hyperuricemia and gout in patients with chronic kidney disease. Received FDA Fast Track designation.",
                 "license": {
                     "spdx": "LicenseRef-FDA-Public",
@@ -328,7 +328,7 @@ def create_accession_metadata():
             "path": DOCS_DIR / "RDCP-26-0003",
             "metadata": {
                 "accession": "RDCP-26-0003",
-                "title": "Divalent siRNA for Prion Disease",
+                "title": "RDCP-26-0003 - Divalent siRNA",
                 "drug": "Divalent siRNA",
                 "drugName": "Divalent siRNA",
                 "description": "Gene therapy for prion disease using divalent siRNA technology. IND cleared by FDA March 14, 2025. Open-source research project.",
