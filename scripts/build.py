@@ -61,6 +61,11 @@ def build_reorganize():
     return run_script("reorganize.py")
 
 
+def build_url_symlinks():
+    """Create URL-escaped symlinks for files with special characters."""
+    return run_script("create_url_symlinks.py")
+
+
 def build_views(clean=False):
     """Generate all views (CTD, By-Date)."""
     success = True
@@ -171,6 +176,7 @@ def main():
         steps.append(("Extract", build_extract))
     if not args.no_reorganize:
         steps.append(("Reorganize", build_reorganize))
+        steps.append(("URL Symlinks", build_url_symlinks))
     if not args.no_views:
         steps.append(("Views", lambda: build_views(args.clean)))
     if not args.no_toc:
