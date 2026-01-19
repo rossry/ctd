@@ -30,12 +30,13 @@ Development workstreams for public release and beyond.
 ## 2. Agent & External Accessibility
 
 **Static URLs:**
-- [ ] Ensure every document has a permanent, predictable URL
-- [ ] URL scheme: `/documents/RDCP-26-0001/files/Clinical-Studies/101-SAD/CSR.pdf`
+- [x] Escape filenames/paths with URL special characters (`scripts/create_url_symlinks.py`)
+- [x] Ensure every document has a permanent, predictable URL
+- [x] URL scheme: `/documents/RDCP-26-0001/files/Clinical-Studies/101-SAD/CSR.pdf`
 
 **Hierarchical index files:**
-- [ ] `index.md` at each folder level (not one giant 4500-line file)
-- [ ] Machine-readable `index.json` per folder
+- [x] `index.md` at each folder level (not one giant 4500-line file)
+- [x] Machine-readable `index.json` per folder
 - [ ] Root `manifest.json` with checksums for caching/validation
 
 **MCP server:**

@@ -92,6 +92,11 @@ def build_toc():
     return run_script("generate_toc.py")
 
 
+def build_indexes():
+    """Generate hierarchical index files."""
+    return run_script("generate_indexes.py")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Build CTD Document Archive",
@@ -181,6 +186,7 @@ def main():
         steps.append(("Views", lambda: build_views(args.clean)))
     if not args.no_toc:
         steps.append(("TOC", build_toc))
+        steps.append(("Indexes", build_indexes))
 
     if not steps:
         print("Nothing to do (all steps skipped)")
