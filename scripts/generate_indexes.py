@@ -25,8 +25,8 @@ SKIP_FILES = {"metadata.json", "__metadata.json", ".gitignore", ".gitkeep",
 # Directories to skip entirely
 SKIP_DIRS = {"_raw"}
 
-# Accession pattern
-ACCESSION_PATTERN = re.compile(r'^RDCP-\d{2}-\d{4}$')
+# Accession pattern - matches RDCP-26-0001 and RDCP-E26-EMA
+ACCESSION_PATTERN = re.compile(r'^RDCP-[A-Z]?\d{2}-\d{4}$|^RDCP-E26-EMA$')
 
 
 def get_file_type(filename):
@@ -129,8 +129,13 @@ def list_children(path):
         if entry.is_dir(follow_symlinks=True):
             # Check for collapsing
             collapsed_suffix, final_path = get_collapsed_chain(entry.path)
+
+            # Get display title from metadata if available
+            child_metadata = load_metadata(Path(entry.path))
+            title_from_meta = child_metadata.get("_folder", {}).get("title")
+
             if collapsed_suffix:
-                display_name = f"{entry.name}/{collapsed_suffix}"
+                display_name = title_from_meta or f"{entry.name}/{collapsed_suffix}"
                 item_count = count_items_recursive(final_path)
                 folders.append({
                     "name": entry.name,
@@ -143,7 +148,7 @@ def list_children(path):
                 item_count = count_items_recursive(entry.path)
                 folders.append({
                     "name": entry.name,
-                    "display_name": entry.name,
+                    "display_name": title_from_meta or entry.name,
                     "collapsed_path": None,
                     "final_path": Path(entry.path),
                     "item_count": item_count,
@@ -201,7 +206,13 @@ def generate_index_md(folder_path, folders, files, metadata, inherited):
         lines.append("")
         for folder in folders:
             display = folder["display_name"]
-            encoded = url_encode_path(display)
+            # Use filesystem name for URL, display name for text
+            fs_name = folder["name"]
+            if folder["collapsed_path"]:
+                fs_path = f"{fs_name}/{folder['collapsed_path']}"
+            else:
+                fs_path = fs_name
+            encoded = url_encode_path(fs_path)
             count_str = f"({folder['item_count']} item{'s' if folder['item_count'] != 1 else ''})"
             lines.append(f"- [{display}/]({encoded}/index.md) {count_str}")
         lines.append("")
@@ -237,6 +248,9 @@ def generate_index_json(folder_path, folders, files, metadata, inherited):
             "url": f"{BASE_URL}/{url_encode_path(folder_rel)}",
             "itemCount": folder["item_count"],
         }
+        # Add title if display name differs from filesystem name
+        if folder["display_name"] != folder["name"]:
+            child["title"] = folder["display_name"]
         if folder["collapsed_path"]:
             child["collapsedPath"] = folder["collapsed_path"]
         children.append(child)

@@ -97,6 +97,14 @@ def build_indexes():
     return run_script("generate_indexes.py")
 
 
+def build_ema(clean=False):
+    """Build EMA accession structure."""
+    args = []
+    if clean:
+        args.append("--clean")
+    return run_script("build_ema.py", *args)
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Build CTD Document Archive",
@@ -136,6 +144,11 @@ def main():
         "--no-toc",
         action="store_true",
         help="Skip TOC generation step"
+    )
+    parser.add_argument(
+        "--no-ema",
+        action="store_true",
+        help="Skip EMA accession build step"
     )
 
     # Shortcut options
@@ -184,6 +197,8 @@ def main():
         steps.append(("URL Symlinks", build_url_symlinks))
     if not args.no_views:
         steps.append(("Views", lambda: build_views(args.clean)))
+    if not args.no_ema:
+        steps.append(("EMA", lambda: build_ema(args.clean)))
     if not args.no_toc:
         steps.append(("TOC", build_toc))
         steps.append(("Indexes", build_indexes))
