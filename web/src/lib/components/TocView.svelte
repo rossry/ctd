@@ -123,6 +123,18 @@
 			default: return 'text-gray-400';
 		}
 	}
+
+	// Check if there are unloaded sections (entries with $ref)
+	function checkHasUnloadedSections(node: TocEntry): boolean {
+		if (node.$ref) return true;
+		if (node.children) {
+			return node.children.some(child => checkHasUnloadedSections(child));
+		}
+		return false;
+	}
+
+	// Derived value for whether we have unloaded sections
+	let hasUnloadedSections = $derived(toc ? checkHasUnloadedSections(toc) : false);
 </script>
 
 <div class="h-full flex flex-col">
@@ -147,9 +159,19 @@
 			{/if}
 		</div>
 		{#if searchQuery && matchingPaths.size > 0}
-			<p class="text-xs text-gray-500 mt-2">{matchingPaths.size} result{matchingPaths.size === 1 ? '' : 's'} found</p>
+			<p class="text-xs text-gray-500 mt-2">
+				{matchingPaths.size} result{matchingPaths.size === 1 ? '' : 's'} found
+				{#if hasUnloadedSections}
+					<span class="text-amber-600 dark:text-amber-400">(some sections not yet loaded)</span>
+				{/if}
+			</p>
 		{:else if searchQuery && matchingPaths.size === 0}
-			<p class="text-xs text-gray-500 mt-2">No results found</p>
+			<p class="text-xs text-gray-500 mt-2">
+				No results found
+				{#if hasUnloadedSections}
+					<span class="text-amber-600 dark:text-amber-400">(some sections not yet loaded)</span>
+				{/if}
+			</p>
 		{/if}
 	</div>
 

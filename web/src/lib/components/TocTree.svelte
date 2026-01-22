@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { TocEntry } from '$lib/types';
-	import { ChevronRight, File, FileText } from 'lucide-svelte';
+	import { ChevronRight, File, FileText, Loader2 } from 'lucide-svelte';
 	import { cn } from '$lib/utils';
 	import TocTree from './TocTree.svelte';
 
@@ -15,6 +15,32 @@
 	let { entries, selectedPath, onSelect, expandedPaths = new Set(), depth = 0 }: Props = $props();
 
 	let localExpanded: Record<string, boolean> = $state({});
+	let loadingPaths: Set<string> = $state(new Set());
+
+	async function handleFolderClick(entry: TocEntry) {
+		// If this folder has a $ref and no children, load them
+		if (entry.$ref && !entry.children) {
+			loadingPaths.add(entry.path);
+			loadingPaths = new Set(loadingPaths);
+
+			try {
+				const res = await fetch('/' + entry.$ref);
+				if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
+				const childToc = await res.json();
+				// Merge children into entry
+				entry.children = childToc.children;
+				// Clear the $ref to indicate it's loaded
+				delete entry.$ref;
+			} catch (error) {
+				console.error('Failed to load toc:', error);
+			} finally {
+				loadingPaths.delete(entry.path);
+				loadingPaths = new Set(loadingPaths);
+			}
+		}
+
+		toggleFolder(entry.path);
+	}
 
 	function toggleFolder(path: string) {
 		localExpanded[path] = !isExpanded(path);
@@ -24,6 +50,10 @@
 		// Local state takes precedence, then check expandedPaths from parent
 		if (path in localExpanded) return localExpanded[path];
 		return expandedPaths.has(path);
+	}
+
+	function isLoading(path: string): boolean {
+		return loadingPaths.has(path);
 	}
 
 	function getIcon(type: string) {
@@ -39,6 +69,7 @@
 		{@const isSelected = selectedPath === entry.path}
 		{@const Icon = getIcon(entry.type)}
 
+		{@const loading = isLoading(entry.path)}
 		<button
 			class={cn(
 				'w-full flex items-center gap-1.5 py-1.5 text-left text-sm rounded-md transition-colors',
@@ -49,16 +80,20 @@
 			title={entry.name}
 			onclick={() => {
 				if (isFolder) {
-					toggleFolder(entry.path);
+					handleFolderClick(entry);
 				} else {
 					onSelect(entry);
 				}
 			}}
 		>
 			{#if isFolder}
-				<ChevronRight
-					class={cn('h-4 w-4 shrink-0 transition-transform', expanded && 'rotate-90')}
-				/>
+				{#if loading}
+					<Loader2 class="h-4 w-4 shrink-0 animate-spin text-gray-400" />
+				{:else}
+					<ChevronRight
+						class={cn('h-4 w-4 shrink-0 transition-transform', expanded && 'rotate-90')}
+					/>
+				{/if}
 			{:else}
 				<Icon class="h-4 w-4 shrink-0 text-gray-500" />
 			{/if}

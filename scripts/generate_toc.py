@@ -8,6 +8,11 @@ Supports the accession-based structure:
   │   └── files/              # Document files
   ├── RDCP-26-0002/
   └── Supporting/             # Non-accession content
+
+Generates a hierarchical TOC with lazy-loading support:
+- Top-level toc.json contains accessions with stubs for files/ and views
+- Split points (files/, By-*) get their own toc.json for lazy loading
+- Uses $ref markers to indicate lazy-loadable subtrees
 """
 
 import json
@@ -134,6 +139,40 @@ def get_sort_key(name, parent_path):
     return (1, natural_sort_key(name))
 
 
+# Track statistics for split points
+split_stats = {"count": 0, "paths": []}
+
+
+def is_split_point(path):
+    """Check if this directory should have its own toc.json.
+
+    Split points are any directory two levels down from documents/:
+    - documents/{accession}/{subdir}/
+
+    This includes files/, By-*, CTD/, and any other view directories.
+    """
+    try:
+        rel = Path(path).relative_to(DOCS_DIR)
+    except ValueError:
+        return False
+
+    parts = rel.parts
+    # Split at: {accession}/{any-subdir}
+    if len(parts) == 2:
+        accession, subdir = parts
+        if ACCESSION_PATTERN.match(accession):
+            return True
+    return False
+
+
+def write_child_toc(path, toc):
+    """Write a child toc.json file for lazy loading."""
+    toc_path = Path(path) / "toc.json"
+    with open(toc_path, "w") as f:
+        json.dump(toc, f, indent=2)
+    return toc_path
+
+
 def load_metadata(path):
     """Load metadata from a directory if it exists.
 
@@ -230,7 +269,8 @@ def scan_directory(path, inherited=None, is_accession_root=False):
 
     for entry in entries:
         if entry in ("metadata.json", "__metadata.json", ".gitignore", ".gitkeep",
-                     "index.json", "index.md", "index-full.json", "index-full.md"):
+                     "index.json", "index.md", "index-full.json", "index-full.md",
+                     "toc.json"):
             continue
         if is_top_level and not ACCESSION_PATTERN.match(entry):
             continue
@@ -262,33 +302,62 @@ def scan_directory(path, inherited=None, is_accession_root=False):
                 child_folder_meta = child_metadata.get("_folder", {})
                 child_accession_meta = None
 
-            children = scan_directory(full_path, current_inherited, is_accession_root=is_accession)
+            # Check if this is a split point (should have its own toc.json)
+            if is_split_point(full_path):
+                # Recursively scan and write to separate toc.json
+                children = scan_directory(full_path, current_inherited, is_accession_root=False)
 
-            item = {
-                "name": entry,
-                "type": "folder",
-                "path": rel_path,
-                "children": children
-            }
+                child_toc = {
+                    "name": entry,
+                    "type": "folder",
+                    "path": rel_path,
+                    "children": children
+                }
+                write_child_toc(full_path, child_toc)
+                split_stats["count"] += 1
+                split_stats["paths"].append(rel_path)
 
-            # Add metadata
-            if is_accession and child_accession_meta:
-                # Accession folder gets special treatment
-                if child_accession_meta.get("title"):
-                    item["title"] = child_accession_meta["title"]
-                if child_accession_meta.get("description"):
-                    item["summary"] = child_accession_meta["description"]
-                if child_accession_meta.get("accession"):
-                    item["accession"] = child_accession_meta["accession"]
-                if child_accession_meta.get("drug"):
-                    item["drug"] = child_accession_meta["drug"]
-                if child_accession_meta.get("license"):
-                    item["license"] = child_accession_meta["license"]
-            else:
+                # Return a stub with $ref for lazy loading
+                item = {
+                    "name": entry,
+                    "type": "folder",
+                    "path": rel_path,
+                    "$ref": f"{rel_path}/toc.json"
+                }
+
+                # Add title from metadata if available
                 if child_folder_meta.get("title"):
                     item["title"] = child_folder_meta["title"]
-                if child_folder_meta.get("summary"):
-                    item["summary"] = child_folder_meta["summary"]
+
+            else:
+                # Normal folder - include children inline
+                children = scan_directory(full_path, current_inherited, is_accession_root=is_accession)
+
+                item = {
+                    "name": entry,
+                    "type": "folder",
+                    "path": rel_path,
+                    "children": children
+                }
+
+                # Add metadata
+                if is_accession and child_accession_meta:
+                    # Accession folder gets special treatment
+                    if child_accession_meta.get("title"):
+                        item["title"] = child_accession_meta["title"]
+                    if child_accession_meta.get("description"):
+                        item["summary"] = child_accession_meta["description"]
+                    if child_accession_meta.get("accession"):
+                        item["accession"] = child_accession_meta["accession"]
+                    if child_accession_meta.get("drug"):
+                        item["drug"] = child_accession_meta["drug"]
+                    if child_accession_meta.get("license"):
+                        item["license"] = child_accession_meta["license"]
+                else:
+                    if child_folder_meta.get("title"):
+                        item["title"] = child_folder_meta["title"]
+                    if child_folder_meta.get("summary"):
+                        item["summary"] = child_folder_meta["summary"]
 
         else:
             # File
@@ -430,9 +499,14 @@ def generate_markdown_header(accessions):
 
 
 def main():
+    global split_stats
+
     if not DOCS_DIR.exists():
         print(f"Error: {DOCS_DIR} does not exist")
         return
+
+    # Reset split stats
+    split_stats = {"count": 0, "paths": []}
 
     toc = {
         "name": "Documents",
@@ -456,15 +530,29 @@ def main():
     with open(OUTPUT_MD, "w") as f:
         f.write("\n".join(md_lines))
 
-    # Count files
-    def count_files(node):
+    # Count files in main toc (excluding $ref stubs)
+    def count_inline_entries(node):
+        if node.get("$ref"):
+            return 0  # Don't count entries in lazy-loaded sections
         if node.get("type") != "folder":
             return 1
-        return sum(count_files(child) for child in node.get("children", []))
+        return sum(count_inline_entries(child) for child in node.get("children", []))
 
-    total = count_files(toc)
-    print(f"Generated {OUTPUT_JSON} with {total} files")
+    inline_count = count_inline_entries(toc)
+
+    # Report results
+    main_size = OUTPUT_JSON.stat().st_size
+    print(f"Generated {OUTPUT_JSON} ({main_size:,} bytes, {inline_count} inline entries)")
     print(f"Generated {OUTPUT_MD}")
+
+    if split_stats["count"] > 0:
+        print(f"Created {split_stats['count']} child toc.json files for lazy loading:")
+        for path in split_stats["paths"]:
+            child_path = DOCS_DIR.parent / path / "toc.json"
+            if child_path.exists():
+                size = child_path.stat().st_size
+                print(f"  - {path}/toc.json ({size:,} bytes)")
+
     if accessions:
         print(f"Found {len(accessions)} accession(s):")
         for acc in accessions:
